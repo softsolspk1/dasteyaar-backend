@@ -1,0 +1,18 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# SSL Certificates (upload manually to server)
+*.key
+*.crt
+*.pem
+*.cert
+*.ca-bundle
+*.p7b
+*.csr
+cert-0*
+nohup.out
