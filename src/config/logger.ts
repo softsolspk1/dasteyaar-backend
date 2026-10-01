@@ -1,5 +1,4 @@
 import winston from 'winston';
-import path from 'path';
 
 // Define log format
 const logFormat = winston.format.combine(
@@ -22,35 +21,19 @@ const consoleFormat = winston.format.combine(
   })
 );
 
-// Create logger instance
+// Create logger instance.
+// Vercel's serverless filesystem is read-only outside /tmp, so file transports
+// error out and (with no error handler on the stream) crash the whole function.
+// Log to console only; Vercel captures stdout/stderr as runtime logs.
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
   defaultMeta: { service: 'dast-e-yaar-api' },
   transports: [
-    // Write errors to error.log
-    new winston.transports.File({
-      filename: path.join('logs', 'error.log'),
-      level: 'error',
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    }),
-    // Write all logs to combined.log
-    new winston.transports.File({
-      filename: path.join('logs', 'combined.log'),
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
+    new winston.transports.Console({
+      format: consoleFormat,
     }),
   ],
 });
-
-// If not in production, log to console as well
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: consoleFormat,
-    })
-  );
-}
 
 export default logger;
