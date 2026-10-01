@@ -16,3 +16,5 @@ dist
 *.csr
 cert-0*
 nohup.out
+
+.vercel
